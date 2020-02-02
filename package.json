@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "start-dev": "nodemon index.js",
-    "build-web": "cd web && npm run build && cd ..",
+    "start": "node server/index.js",
+    "start-dev": "nodemon server/index.js",
+    "build-web": "yarn --cwd web install && yarn --cwd web build",
     "deploy-web": "cp -a web/build/. public/",
-    "heroku-postbuild": "npm run build-web && npm run deploy-web"
+    "heroku-postbuild": "yarn build-web && yarn deploy-web"
   },
   "engines": {
     "node": "12.14.1"
@@ -26,5 +26,6 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
-  }
+  },
+  "repository": "https://github.com/kylemharman/simple-surf.git"
 }
