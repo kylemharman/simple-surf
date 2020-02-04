@@ -1,9 +1,12 @@
 import React from 'react'
 
-const MySpots = () => {
+const MySpots = (props) => {
+    
+    console.log(props)
+
     return (
         <div>
-            <h1>My Spots</h1>
+            <h1>{`${props.user.name} locations`}</h1>
         </div>
     )
 }

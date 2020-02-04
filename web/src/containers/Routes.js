@@ -7,15 +7,26 @@ import Favorites from "../pages/Favorites";
 import SignUp from "../pages/SignUp";
 import Login from "../pages/Login";
 
-export default function Routes() {
-	
+export default function Routes(props) {
 	return (
-		<Router>
-			<Home path="/" />
-			<Forecasts path="/forecasts" />
-			<Favorites path="/favorites" />
-			<SignUp path="/sign-up" />
-			<Login path="/login" />
-		</Router>
+		<React.Fragment>
+			{ props.user ?
+				<Router>
+					<Favorites path="/favorites" user={props.user} /> 
+				</Router>
+				:
+				<Router>
+					<Home path="/" />
+					<Forecasts path="/forecasts" />
+					<SignUp 
+						path="/sign-up" 
+						signUp={ (userName, userEmail, userPassword) => props.signUp(userName,userEmail, userPassword)} />
+					<Login 
+						path="/login" 
+						login={ (userEmail, userPassword) => props.login(userEmail, userPassword)}
+						loginMessage={props.loginMessage}/>
+				</Router>
+			}
+		</React.Fragment>
 	);
 }

@@ -6,8 +6,6 @@ import { Nav } from '../styles/NavBarStyled';
 
 
 const NavBar = (props) => {
-    
-    console.log(props.userToken)
 
     return (
         <header>
@@ -18,7 +16,7 @@ const NavBar = (props) => {
                 
                 <React.Fragment>
                     <Link to="/forecasts">Forecasts</Link>
-                    { !props.userToken ? 
+                    { !props.user ? 
                         <React.Fragment>
                             <Link to="/sign-up">Sign Up</Link>
                             <Link to="/login">Login</Link>
@@ -26,8 +24,7 @@ const NavBar = (props) => {
                         :
                         <React.Fragment>
                             <Link to="/favorites">Favorites</Link>
-                            <Link to="/" onClick={ props.logout } >Logout</Link>
-                            
+                            <Link to="/" onClick={ props.logout }>Logout</Link>
                         </React.Fragment>
                     }
                 </React.Fragment>
