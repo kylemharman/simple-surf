@@ -34,6 +34,8 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }]
+}, {
+    timestamps: true
 })
 
 // restrict the password and tokens from being sent back in the res
