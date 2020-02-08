@@ -6,18 +6,20 @@ import Forecasts from "../pages/Forecasts";
 import Favorites from "../pages/Favorites";
 import SignUp from "../pages/SignUp";
 import Login from "../pages/Login";
+import Location from "../pages/Location";
 
 export default function Routes(props) {
 	return (
 		<React.Fragment>
 			{ props.user ?
 				<Router>
-					<Favorites path="/favorites" user={props.user} /> 
 				</Router>
 				:
 				<Router>
-					<Home path="/" />
+					<Location path="/location/:id" />
+					<Favorites path="/favorites" user={props.user} /> 
 					<Forecasts path="/forecasts" />
+					<Home path="/" />
 					<SignUp 
 						path="/sign-up" 
 						signUp={ (userName, userEmail, userPassword) => props.signUp(userName,userEmail, userPassword)} />

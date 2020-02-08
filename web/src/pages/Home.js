@@ -1,11 +1,14 @@
-import React from 'react'
+import React from 'react';
+import { HomeHeroContainer } from '../styles/HomeStyled';
 
 const Home = (props) => {
     
     return (
-        <div>
-            
-        </div>
+        <React.Fragment>
+            <HomeHeroContainer>
+                
+            </HomeHeroContainer>
+        </React.Fragment>
     )
 }
 

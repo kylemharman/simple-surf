@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { FormContainer } from '../styles/FormsStyled';
 
 
 const FormSignUp = (props) => {
@@ -6,9 +7,10 @@ const FormSignUp = (props) => {
     const [userName, setUserName] = useState(""); // name
     const [userEmail, setUserEmail] = useState("");
     const [userPassword, setUserPassword] = useState("");
+    const [confrimUserPassword, setUserConfirmPassword] = useState("");
 
     return (
-        <React.Fragment> 
+        <FormContainer> 
             <input 
                 type="text"
                 name="name"
@@ -27,8 +29,14 @@ const FormSignUp = (props) => {
                 placeholder="Password"
                 onChange={ e => setUserPassword(e.target.value)}
                 required />
+            <input 
+                type="password"
+                name="password-confirm"
+                placeholder="Confirm Password"
+                onChange={ e => setUserConfirmPassword(e.target.value)}
+                required />
             <button onClick={() => props.signUp( userName, userEmail, userPassword, )}>Sign Up</button> 
-        </React.Fragment>
+        </FormContainer>
     )
 }
 

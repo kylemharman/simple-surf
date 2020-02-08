@@ -10,24 +10,24 @@ const NavBar = (props) => {
     return (
         <header>
             <Nav>
-                <React.Fragment>
-                    <Link to="/"><h3>SimpleSurf</h3></Link>
-                </React.Fragment>
+                <div>
+                    <Link to="/"><strong>SimpleSurf</strong></Link>
+                </div>
                 
-                <React.Fragment>
-                    <Link to="/forecasts">Forecasts</Link>
-                    { !props.user ? 
+                <div>
+                    {/* { !props.user ?  */}
                         <React.Fragment>
                             <Link to="/sign-up">Sign Up</Link>
                             <Link to="/login">Login</Link>
                         </React.Fragment>
-                        :
+                        {/* : */}
                         <React.Fragment>
+                            <Link to="/forecasts">Forecasts</Link>
                             <Link to="/favorites">Favorites</Link>
                             <Link to="/" onClick={ props.logout }>Logout</Link>
                         </React.Fragment>
-                    }
-                </React.Fragment>
+                    {/* } */}
+                </div>
             </Nav>    
         </header>
     )

@@ -4,5 +4,13 @@ export const Nav = styled.nav`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 50px;
+    margin: 20px 50px;
+
+    a {
+        margin-right: 30px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
 `;

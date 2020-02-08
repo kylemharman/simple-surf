@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { FormContainer } from '../styles/FormsStyled';
 
 const FormLogin = (props) => {
     
@@ -6,7 +7,7 @@ const FormLogin = (props) => {
     const [userPassword, setUserPassword] = useState("");
 
     return (
-        <React.Fragment> 
+        <FormContainer> 
             <input 
                 type="email"
                 name="email"
@@ -21,7 +22,7 @@ const FormLogin = (props) => {
                 required />
             <button onClick={() => props.login(userEmail, userPassword)}>Login</button>
             <p>{props.loginMessage}</p> 
-        </React.Fragment>
+        </FormContainer>
     )
 }
 

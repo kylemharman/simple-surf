@@ -1,14 +1,13 @@
 import React from 'react'
+import { Container } from '../styles/GlobalStyles';
 
-const MySpots = (props) => {
-    
-    console.log(props)
+const Favorites = (props) => {
 
     return (
-        <div>
-            <h1>{`${props.user.name} locations`}</h1>
-        </div>
+        <Container margin >
+            <h1>Your Favorites</h1>
+        </Container>
     )
 }
 
-export default MySpots
+export default Favorites

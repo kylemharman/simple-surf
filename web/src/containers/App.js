@@ -5,10 +5,11 @@ import axios from 'axios';
 import Routes from './Routes';
 import NavBar from '../components/NavBar';
 // styles
-import { Container } from '../styles/GlobalStyles';
+import { ThemeProvider } from 'styled-components';
+import { theme } from '../styles/theme';
 
 const App = () => {
-    
+
     const [userToken, setUserToken] = useState(false);
 	const [userInfo, setUserInfo] = useState(false);
 	const [loginMessage, setLoginMessage] = useState("");
@@ -58,18 +59,18 @@ const App = () => {
                 console.log(e)
             });
     }
-
+    
     return (
-        <React.Fragment>
-            <NavBar user={userInfo} logout={() => handleLogout()} />
-        <Container>
-            <Routes 
-                user={userInfo} 
-                login={ (userEmail, userPassword) => handleLogin(userEmail, userPassword)}
-                signUp={ (userName ,userEmail, userPassword) => handleSignUp(userName, userEmail, userPassword)}
-                loginMessage={loginMessage}/>
-        </Container>
-        </React.Fragment>
+        <ThemeProvider theme={theme}>
+            <React.Fragment>
+                <NavBar user={userInfo} logout={() => handleLogout()} />
+                <Routes 
+                    user={userInfo} 
+                    login={ (userEmail, userPassword) => handleLogin(userEmail, userPassword)}
+                    signUp={ (userName ,userEmail, userPassword) => handleSignUp(userName, userEmail, userPassword)}
+                    loginMessage={loginMessage}/>
+            </React.Fragment>
+        </ThemeProvider>
     )
 }
 
