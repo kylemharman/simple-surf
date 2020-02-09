@@ -1,7 +1,8 @@
 export const theme = {
     color: {
-        primary: '#0424d9',
-        secondary: '#020F59',
+        primary: '#0D05F2',
+        secondary: '#0F0140',
+        green: '#0ABF04',
         darkGrey: '#353535',
         lightGrey: '#cccccc'
     },
@@ -12,3 +13,5 @@ export const theme = {
         xl: '4rem'
     }
 }
+
+

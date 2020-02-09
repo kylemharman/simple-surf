@@ -10,12 +10,11 @@ import { Container } from '../styles/GlobalStyles';
 const Location = (props) => {
 
     const [location, setLocation] = useState({});
-    const [currentForecast, setCurrentForecast] = useState(null)
-    const [sunrise, setSunrise] = useState(null)
-    const [sunset, setSunset] = useState(null)
-    const [tideTimes, setTideTimes] = useState(null)    
+    const [forecast, setForecast] = useState(null) 
     const [saveToFavourites, setSaveToFavourites] = useState(false);
     
+    console.log(forecast)
+
     const timeMap = {
         0: 0,
         1: 0,
@@ -58,7 +57,6 @@ const Location = (props) => {
     const getLocation = async () => {
         try {
             const res = await axios.get(`/locations/${props.id}`)
-            console.log('res from location: ', res.data)
             setLocation(res.data)
             getForcast(res.data.longitude,res.data.latitude);
         } catch (e) {
@@ -70,11 +68,13 @@ const Location = (props) => {
         
         axios.get(`http://api.worldweatheronline.com/premium/v1/marine.ashx?key=${process.env.REACT_APP_WEATHER_API_KEY}&format=json&q=${encodeURIComponent(longitude)},${encodeURIComponent(latitude)}&tide=yes`)
             .then(res => {
-                console.log('res from forecast: ', res.data)
-                setTideTimes(res.data.data.weather[0].tides[0].tide_data)
-                setCurrentForecast(res.data.data.weather[0].hourly[currentTime])
-                setSunrise(res.data.data.weather[0].astronomy[0].sunrise)
-                setSunset(res.data.data.weather[0].astronomy[0].sunset)
+                setForecast({
+                    currentForecast: res.data.data.weather[0].hourly[currentTime],
+                    outlookForecast: res.data.data.weather[0].hourly,
+                    tideTimes: res.data.data.weather[0].tides[0].tide_data,
+                    sunrise: res.data.data.weather[0].astronomy[0].sunrise,
+                    sunset: res.data.data.weather[0].astronomy[0].sunset
+                })
             })
             .catch(e => console.log(e))
     }
@@ -93,38 +93,53 @@ const Location = (props) => {
                 <ButtonAddToFavourites saved={saveToFavourites} clicked={() => handleSaveToFavourites()}/>
 
         </Container>
-                { currentForecast ?
+                { forecast ?
                     <React.Fragment>
                         <Container wrap={"wrap"}>
-                        <p style={{ marginRight: "20px"}}>Wave Height - {Math.floor(currentForecast.sigHeight_m * 3.28)}-{Math.ceil(currentForecast.sigHeight_m * 3.28)}ft</p> 
-                        <p style={{ marginRight: "20px"}}>Wind Direction - {currentForecast.winddir16Point} @ {currentForecast.windspeedKmph}kph - Gusts {currentForecast.WindGustKmph}kph</p>
-                        <p style={{ marginRight: "20px"}}>Swell Direction - {currentForecast.swellDir16Point} @ {Math.round(currentForecast.swellPeriod_secs)}secs</p>
+                        <p style={{ marginRight: "20px"}}>Wave Height - {Math.floor(forecast.currentForecast.sigHeight_m * 3.28)}-{Math.ceil(forecast.currentForecast.sigHeight_m * 3.28)}ft</p> 
+                        <p style={{ marginRight: "20px"}}>Wind Direction - {forecast.currentForecast.winddir16Point} @ {forecast.currentForecast.windspeedKmph}kph - Gusts {forecast.currentForecast.WindGustKmph}kph</p>
+                        <p style={{ marginRight: "20px"}}>Swell Direction - {forecast.currentForecast.swellDir16Point} @ {Math.round(forecast.currentForecast.swellPeriod_secs)}secs</p>
                         
-                        {tideTimes.map( (tide, index) => {
+                        {forecast.tideTimes.map( (tide, index) => {
                             return <p key={index} style={{ marginRight: "20px"}}>{tide.tide_type.toLowerCase()} Tide: {tide.tideTime}</p>
                         })}
 
-                        <p style={{ marginRight: "20px"}}>Air Temp - {currentForecast.tempC}</p>
-                        <p style={{ marginRight: "20px"}}>Sea Temp - {currentForecast.waterTemp_C}</p>
-                        <p style={{ marginRight: "20px"}}>Sunrise - {sunrise}</p>
-                        <p style={{ marginRight: "20px"}}>Sunset - {sunset}</p>
+                        <p style={{ marginRight: "20px"}}>Air Temp - {forecast.currentForecast.tempC}</p>
+                        <p style={{ marginRight: "20px"}}>Sea Temp - {forecast.currentForecast.waterTemp_C}</p>
+                        <p style={{ marginRight: "20px"}}>Sunrise - {forecast.sunrise}</p>
+                        <p style={{ marginRight: "20px"}}>Sunset - {forecast.sunset}</p>
                         </Container> 
                         
                         <Container >
                             <StaticLocationMap 
                                 lat={location.latitude} 
                                 lng={location.longitude} 
-                                windDirection={currentForecast.winddirDegree} 
-                                swellDirection={currentForecast.swellDir}
-                                windDirectionCompass={currentForecast.winddir16Point}
-                                swellDirectionCompass={currentForecast.swellDir16Point}
-                                windDirectionSpeed={currentForecast.windspeedKmph}
-                                swellPeriod={currentForecast.swellPeriod_secs}
+                                windDirection={forecast.currentForecast.winddirDegree} 
+                                swellDirection={forecast.currentForecast.swellDir}
+                                windDirectionCompass={forecast.currentForecast.winddir16Point}
+                                swellDirectionCompass={forecast.currentForecast.swellDir16Point}
+                                windDirectionSpeed={forecast.currentForecast.windspeedKmph}
+                                swellPeriod={forecast.currentForecast.swellPeriod_secs}
                             />
                         </Container>
 
+                        <h1>Todays Outlook</h1>
                         <Container>
-                            <h1></h1>
+                            {forecast.outlookForecast.map( (forecast, index) => {
+                                return <Container col key={index} style={{ marginRight: "20px"}}>
+                                        
+                                        <p>{forecast.time}</p>
+                                        
+                                        <h6>{Math.floor(forecast.sigHeight_m * 3.28)}-{Math.ceil(forecast.sigHeight_m * 3.28)}ft</h6>
+                                        <p style={{ margin: "0"}}>Wave Height</p>
+                                        
+                                        <h6>{forecast.winddir16Point} @ {forecast.windspeedKmph}kph</h6>
+                                        <p style={{ margin: "0"}}>Wind</p>
+                                        
+                                        <h6>{forecast.swellDir16Point} @ {Math.round(forecast.swellPeriod_secs)}secs</h6>
+                                        <p style={{ margin: "0"}}>Swell</p>
+                                    </Container>
+                            })};
                         </Container>
                         
                     </React.Fragment> 

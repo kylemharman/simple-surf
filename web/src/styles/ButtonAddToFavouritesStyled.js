@@ -4,7 +4,7 @@ export const StyledSVG = styled.svg`
 
     & .circle {
         /* fill: red;  */
-        fill: ${(props) => ( props.saved ? "red" : "#0424D9" )}; 
+        fill: ${(props) => ( props.saved ? "red" : "#0ABF04" )}; 
     }
 
     & .rotateTop {
@@ -19,7 +19,4 @@ export const StyledSVG = styled.svg`
         transform: ${(props) => (props.saved ? "translateX(35px)" : "rotate(0deg)" )}; 
         
     }
-
-    
-     
 `

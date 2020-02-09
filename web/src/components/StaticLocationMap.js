@@ -2,13 +2,12 @@ import React from 'react'
 import ReactTooltip from 'react-tooltip'
 // styles
 import { MapContainer, MapImage, CompassImage, WindArrowPNG, SwellArrowPNG } from '../styles/StaticLocationMapStyled'
-import Compass from '../assets/compass.png';
-import windArrow from '../assets/wind-arrow.png'
-import swellArrow from '../assets/swell-arrow.png'
+import Compass from '../assets/compass.svg';
+import windArrow from '../assets/wind-arrow.svg'
+import swellArrow from '../assets/swell-arrow.svg'
 
 const StaticLocationMap = (props) => {
 
-    console.log(props)
     return (
         <MapContainer >
             <CompassImage 
