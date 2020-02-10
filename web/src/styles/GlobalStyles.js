@@ -4,7 +4,8 @@ export const Container = styled.div`
     display: flex;
     flex-wrap: ${(props) => (props.wrap ? "wrap" : null)}; 
     flex-direction: ${(props) => (props.col ? "column" : null)}; 
-    align-items: ${(props) => (props.center ? "center" : "left")}; 
+    align-items: ${(props) => (props.center ? "center" : "left")};
+    justify-content: ${(props) => (props.justify ? "center" : null)};
     margin: ${(props) => (props.margin ? "20px 50px" : null)};
 `;
 

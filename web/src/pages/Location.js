@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
+import ReactTooltip from 'react-tooltip'
 // components
 import ButtonAddToFavourites from '../components/ButtonAddToFavourites';
 import StaticLocationMap from '../components/StaticLocationMap';
+import ForecastInfo from '../components/ForecastInfo';
+import ForecastList from '../components/ForecastList';
+import Select from 'react-select';
 // styles
 import { Container } from '../styles/GlobalStyles';
+// assets
+import waveIcon from '../assets/wave-icon.svg';
+import windIconGrey from '../assets/wind-arrow.svg';
+import swellIconGrey from '../assets/swell-arrow.svg';
 
 
 const Location = (props) => {
 
-    const [location, setLocation] = useState({});
     const [forecast, setForecast] = useState(null) 
+    const [dailyForecast, setDailyForecast] = useState(null) 
+    const [location, setLocation] = useState({});
     const [saveToFavourites, setSaveToFavourites] = useState(false);
-    
-    console.log(forecast)
+    const [selectedOption, setSelectedOption] = useState("Today")
 
     const timeMap = {
         0: 0,
@@ -42,6 +50,22 @@ const Location = (props) => {
         23: 7,
     }
 
+    const convertDate = (dateToConvert) => {
+        
+        if (!dateToConvert) return;
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const d = new Date(dateToConvert);
+        const dayName = days[d.getDay()];
+        const date = dateToConvert.split("-").reverse().slice(0,2).join('/')
+     
+        return `${dayName}, ${date}`
+        
+    }
+
+    if (forecast) {
+        convertDate()
+    }
+      
     const getUsersTime = () => {
         let date = new Date();
         let hour = date.getHours();  
@@ -49,7 +73,7 @@ const Location = (props) => {
         return timeMap[hour]
     }
     const currentTime = getUsersTime();
-    
+
     useEffect(() => {
         getLocation();
     }, []); 
@@ -66,91 +90,129 @@ const Location = (props) => {
 
     const getForcast = (longitude, latitude) => {
         
-        axios.get(`http://api.worldweatheronline.com/premium/v1/marine.ashx?key=${process.env.REACT_APP_WEATHER_API_KEY}&format=json&q=${encodeURIComponent(longitude)},${encodeURIComponent(latitude)}&tide=yes`)
+        axios.get(`http://api.worldweatheronline.com/premium/v1/marine.ashx?key=${process.env.REACT_APP_WEATHER_API_KEY}&format=json&q=${encodeURIComponent(longitude)},${encodeURIComponent(latitude)}&tide=yes`) // get 24 Hour Report &tp=1
             .then(res => {
-                setForecast({
-                    currentForecast: res.data.data.weather[0].hourly[currentTime],
-                    outlookForecast: res.data.data.weather[0].hourly,
-                    tideTimes: res.data.data.weather[0].tides[0].tide_data,
-                    sunrise: res.data.data.weather[0].astronomy[0].sunrise,
-                    sunset: res.data.data.weather[0].astronomy[0].sunset
-                })
+                setDailyForecast(res.data.data.weather[0].hourly)
+                setForecast(res.data.data.weather)
             })
             .catch(e => console.log(e))
     }
 
+    
     const handleSaveToFavourites = () => {
         // post requset to axois to save this location to the users locations
 
         setSaveToFavourites(!saveToFavourites)
     }
-    
 
+    const handleForecastSelected = (selectedOption) => {
+        setDailyForecast(selectedOption.value)
+        setSelectedOption(selectedOption)
+    }
+    
     return (
         <Container margin col> 
-            <Container>
-            <h1>{location.name}</h1> 
-                <ButtonAddToFavourites saved={saveToFavourites} clicked={() => handleSaveToFavourites()}/>
+            
+                <Container>
+                <h1>{location.name}</h1> 
+                    <ButtonAddToFavourites value={selectedOption} saved={saveToFavourites} clicked={() => handleSaveToFavourites()}/>
+                </Container>
 
-        </Container>
                 { forecast ?
-                    <React.Fragment>
-                        <Container wrap={"wrap"}>
-                        <p style={{ marginRight: "20px"}}>Wave Height - {Math.floor(forecast.currentForecast.sigHeight_m * 3.28)}-{Math.ceil(forecast.currentForecast.sigHeight_m * 3.28)}ft</p> 
-                        <p style={{ marginRight: "20px"}}>Wind Direction - {forecast.currentForecast.winddir16Point} @ {forecast.currentForecast.windspeedKmph}kph - Gusts {forecast.currentForecast.WindGustKmph}kph</p>
-                        <p style={{ marginRight: "20px"}}>Swell Direction - {forecast.currentForecast.swellDir16Point} @ {Math.round(forecast.currentForecast.swellPeriod_secs)}secs</p>
-                        
-                        {forecast.tideTimes.map( (tide, index) => {
-                            return <p key={index} style={{ marginRight: "20px"}}>{tide.tide_type.toLowerCase()} Tide: {tide.tideTime}</p>
-                        })}
+                    
 
-                        <p style={{ marginRight: "20px"}}>Air Temp - {forecast.currentForecast.tempC}</p>
-                        <p style={{ marginRight: "20px"}}>Sea Temp - {forecast.currentForecast.waterTemp_C}</p>
-                        <p style={{ marginRight: "20px"}}>Sunrise - {forecast.sunrise}</p>
-                        <p style={{ marginRight: "20px"}}>Sunset - {forecast.sunset}</p>
-                        </Container> 
+                    <React.Fragment>
                         
-                        <Container >
-                            <StaticLocationMap 
-                                lat={location.latitude} 
-                                lng={location.longitude} 
-                                windDirection={forecast.currentForecast.winddirDegree} 
-                                swellDirection={forecast.currentForecast.swellDir}
-                                windDirectionCompass={forecast.currentForecast.winddir16Point}
-                                swellDirectionCompass={forecast.currentForecast.swellDir16Point}
-                                windDirectionSpeed={forecast.currentForecast.windspeedKmph}
-                                swellPeriod={forecast.currentForecast.swellPeriod_secs}
+                        <h3>Current Conditions</h3>
+                        <Container wrap={"wrap"}>
+                            <ForecastInfo
+                                header=""
+                                alt="wave icon" 
+                                src={waveIcon}
+                                dataTip={"Wave height"}
+                                title={`${Math.floor(forecast[0].hourly[currentTime].sigHeight_m * 3.28)}-${Math.ceil(forecast[0].hourly[currentTime].sigHeight_m * 3.28)}ft`}
+                                body={`.`}  
+                            />
+                            <ForecastInfo 
+                                header=""
+                                alt="swell icon" 
+                                src={swellIconGrey}
+                                rotate={forecast[0].hourly[currentTime].swellDir}
+                                dataTip={"Swell direction and period"}
+                                title={forecast[0].hourly[currentTime].swellDir16Point}
+                                body={`${Math.round(forecast[0].hourly[currentTime].swellHeight_ft)}ft at ${Math.round(forecast[0].hourly[currentTime].swellPeriod_secs)}s`}
+                            />
+                            <ForecastInfo 
+                                header=""   
+                                alt="wind icon" 
+                                src={windIconGrey}
+                                rotate={forecast[0].hourly[currentTime].winddirDegree}
+                                dataTip={"Wind direction and speed"}
+                                title={forecast[0].hourly[currentTime].winddir16Point}
+                                body={`${forecast[0].hourly[currentTime].windspeedKmph} km/h`}  
                             />
                         </Container>
 
-                        <h1>Todays Outlook</h1>
                         <Container>
-                            {forecast.outlookForecast.map( (forecast, index) => {
-                                return <Container col key={index} style={{ marginRight: "20px"}}>
-                                        
-                                        <p>{forecast.time}</p>
-                                        
-                                        <h6>{Math.floor(forecast.sigHeight_m * 3.28)}-{Math.ceil(forecast.sigHeight_m * 3.28)}ft</h6>
-                                        <p style={{ margin: "0"}}>Wave Height</p>
-                                        
-                                        <h6>{forecast.winddir16Point} @ {forecast.windspeedKmph}kph</h6>
-                                        <p style={{ margin: "0"}}>Wind</p>
-                                        
-                                        <h6>{forecast.swellDir16Point} @ {Math.round(forecast.swellPeriod_secs)}secs</h6>
-                                        <p style={{ margin: "0"}}>Swell</p>
-                                    </Container>
-                            })};
+                            <StaticLocationMap 
+                                lat={location.latitude} 
+                                lng={location.longitude} 
+                                windDirection={forecast[0].hourly[currentTime].winddirDegree} 
+                                swellDirection={forecast[0].hourly[currentTime].swellDir}
+                                windDirectionCompass={forecast[0].hourly[currentTime].winddir16Point}
+                                swellDirectionCompass={forecast[0].hourly[currentTime].swellDir16Point}
+                                windDirectionSpeed={forecast[0].hourly[currentTime].windspeedKmph}
+                                swellPeriod={forecast[0].hourly[currentTime].swellPeriod_secs}
+                            />
                         </Container>
+
+                        <Container>
+                            <Container col style={{ marginRight: "20px"}}>
+                                {forecast[0].tides[0].tide_data.map( (tide, index) => {
+                                    return <p key={index} style={{ margin: "5px"}}>{tide.tide_type.charAt(0).toUpperCase() + tide.tide_type.slice(1).toLowerCase()} Tide: {tide.tideTime}</p>
+                                })}
+                            </Container>
+                            <Container col>
+                                <p style={{ margin: "5px"}}>Air Temp - {forecast[0].hourly[currentTime].tempC}&#176;</p>
+                                <p style={{ margin: "5px"}}>Sea Temp - {forecast[0].hourly[currentTime].waterTemp_C}&#176;</p>
+                                <p style={{ margin: "5px"}}>Sunrise - {forecast[0].astronomy[0].sunrise}</p>
+                                <p style={{ margin: "5px"}}>Sunset - {forecast[0].astronomy[0].sunset}</p>
+                            </Container>
+                        </Container>
+
+                    
+                        <h3>Select Forecast</h3> 
+                      
+                        <div style={{marginBottom: "20px", width:"270px"}}>
+                            <Select
+                                
+                                value={selectedOption} 
+                                placeholder={selectedOption}
+                                onChange={(selectedOption) => handleForecastSelected(selectedOption)} 
+                                options={[
+                                    { value: forecast[0].hourly, label: 'Today' },
+                                    { value: forecast[1].hourly, label: 'Tomorrow' },
+                                    { value: forecast[2].hourly, label: convertDate(forecast[2].date) },
+                                    { value: forecast[3].hourly, label: convertDate(forecast[3].date) },
+                                    { value: forecast[4].hourly, label: convertDate(forecast[4].date) },
+                                    { value: forecast[5].hourly, label: convertDate(forecast[5].date) },
+                                    { value: forecast[6].hourly, label: convertDate(forecast[6].date) },
+                                ]}
+                            />
+                        </div>
                         
+
+                        <Container >
+                            <ForecastList forecast={dailyForecast} time={currentTime} />
+                        </Container>
+
+                        <ReactTooltip effect="solid"/>
                     </React.Fragment> 
                     : 
                     <React.Fragment>
                         <h3>Loading...</h3>
                     </React.Fragment>
                 }
-               
-
-            
         </Container>
     )
 }

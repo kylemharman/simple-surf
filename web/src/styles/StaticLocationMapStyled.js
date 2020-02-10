@@ -30,6 +30,7 @@ export const WindArrowPNG = styled.img`
     height: 30px;
     width: 30px; 
     transform-origin: center 110px;
+    fill: ${(props) => props.theme.color.primary};
     top: 10%;
     left: 46.5%;
     z-index: 15;
