@@ -91,7 +91,7 @@ const Location = (props) => {
 
     const getForcast = (latitude, longitude) => {
         
-        axios.get(`http://api.worldweatheronline.com/premium/v1/marine.ashx?key=${process.env.REACT_APP_WEATHER_API_KEY}&format=json&q=${encodeURIComponent(latitude)},${encodeURIComponent(longitude)}&tide=yes`) // get 24 Hour Report &tp=1
+        axios.get(`https://api.worldweatheronline.com/premium/v1/marine.ashx?key=${process.env.REACT_APP_WEATHER_API_KEY}&format=json&q=${encodeURIComponent(latitude)},${encodeURIComponent(longitude)}&tide=yes`) // get 24 Hour Report &tp=1
             .then(res => {
                 setDailyForcast(res.data.data.weather[0].hourly)
                 setForecast(res.data.data.weather)
