@@ -15,10 +15,11 @@ router.post('/locations', async (req, res) => {
     }
 })
 
+// get all locations
 router.get('/locations', async (req, res) => {
 
     try {
-        const locations = await Location.find({})
+        const locations = await Location.find().collation({locale:'en',strength: 2}).sort({name:1})
         res.send(locations)
     } catch (e) {
         res.status(500).send(e)
@@ -26,6 +27,23 @@ router.get('/locations', async (req, res) => {
 
 })
 
+// get locations based on search
+router.get('/location-search/:locations', async (req, res) => {
+
+    const locationsGroup = req.params.locations
+
+    console.log(locationsGroup)
+
+    try {
+        const locations = await Location.find( {"country_group" : locationsGroup }).collation({locale:'en',strength: 2}).sort({name:1})
+        console.log(locations)
+        res.send(locations)
+    } catch (e) {
+        res.status(500).send(e)
+    }
+
+})
+// get a location by id
 router.get('/locations/:id', async (req, res) => {
     const _id = req.params.id
 

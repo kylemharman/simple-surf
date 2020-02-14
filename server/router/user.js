@@ -3,14 +3,6 @@ const router = new express.Router(); // creates a new router instance
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 
-// test
-router.get('/hello', (req, res) => {
-    res.send({ 
-        quote: "The best surfer out there is the one having the most fun.",
-        by: "Phil Edwards"
-    })
-})
-
 // create a new user
 router.post('/sign-up', async (req, res) => {
 
@@ -35,7 +27,6 @@ router.post('/login', async (req, res) => {
         res.status(400).send({error: 'Invalid login details!'})
     }
 })
-
 
 // logout user
 router.post('/logout', auth, async (req, res) => {
@@ -65,6 +56,34 @@ router.post('/logout-all-sessions', auth, async (req, res) => {
     }
 })
 
+// add a favorite spot
+router.post('/user/favorites', auth, async (req, res) => {
+    
+    const location = { locationID: req.body.locationID, name: req.body.name }
+
+    try {
+        req.user.favorites = req.user.favorites.concat( location )
+        await req.user.save();
+        res.send(req.user) // 201 staus code = Created 
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
+// remove a favorite spot
+router.post('/user/favorites/:id', auth, async (req, res) => {
+
+    try {
+        req.user.favorites = req.user.favorites.filter(location => {
+            return location.locationID !== req.params.id
+        })
+        await req.user.save()
+        res.send(req.user)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+    
 // get the user
 router.get('/users/me', auth, async (req, res) => {
     res.send(req.user)

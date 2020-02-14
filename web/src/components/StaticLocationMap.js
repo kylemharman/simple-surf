@@ -15,7 +15,7 @@ const StaticLocationMap = (props) => {
             />
             <MapImage 
                 alt="map image" 
-                src={`https://api.mapbox.com/styles/v1/mapbox/light-v10/static/${encodeURIComponent(props.lat)},${encodeURIComponent(props.lng)},12.5,10/300x300@2x?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`} 
+                src={`https://api.mapbox.com/styles/v1/mapbox/light-v10/static/${encodeURIComponent(props.lng)},${encodeURIComponent(props.lat)},12,10/300x300@2x?access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`} 
             />
             <WindArrowPNG 
                 alt="wind direction arrow"

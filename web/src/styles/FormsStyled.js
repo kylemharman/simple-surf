@@ -4,6 +4,7 @@ export const FormContainer = styled.div `
     display: flex;
     flex-direction: column;
     width: 400px;
+    
 
     input {
         padding-top: 20px;
@@ -11,19 +12,20 @@ export const FormContainer = styled.div `
         font-size: ${props => props.theme.fontSize.md};
         border: none;
         border-bottom: solid 2px ${props => props.theme.color.lightGrey};
-
+        background-color: rgba(255, 255, 255, 0.0);
+        
         &:focus {
             outline: none;
             border-bottom: solid 2px ${props => props.theme.color.primary};
         }
         &::placeholder {
-            color: ${props => props.theme.color.lightGrey};
+            color: ${props => props.theme.color.primary};
             font-size: ${props => props.theme.fontSize.md};
         }
     }
 
     button {
-        margin: 20px 0;
+        margin: 30px 0;
         padding: 10px;
         background-color: ${props => props.theme.color.primary};
         color: white;
@@ -38,6 +40,5 @@ export const FormContainer = styled.div `
             background-color: ${props => props.theme.color.secondary};
         }
     }
-
 
 `

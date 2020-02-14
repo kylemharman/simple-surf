@@ -1,12 +1,14 @@
 import React from 'react';
 import FormSignUp from '../components/FormSignUp';
-import { Container } from '../styles/GlobalStyles';
+import { Container, FormContainer } from '../styles/GlobalStyles';
 
 const SignUp = (props) => {
     return (
-        <Container margin col center>
-            <h1>Sign Up</h1>
-            <FormSignUp signUp={ (userName, userEmail, userPassword) => props.signUp(userName,userEmail, userPassword)} />
+        <Container vh col center img>
+            <FormContainer>
+                <h1>Sign Up</h1>
+                <FormSignUp signUp={ (userName, userEmail, userPassword) => props.signUp(userName,userEmail, userPassword)} />
+            </FormContainer>
         </Container>
     )
 }

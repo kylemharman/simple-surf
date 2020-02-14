@@ -1,7 +1,7 @@
 import React from 'react'
 import {Link} from '@reach/router'
 // styles
-import { Nav } from '../styles/NavBarStyled';
+import { Nav, LoginButton, NavLink } from '../styles/NavBarStyled';
 // components
 
 
@@ -15,18 +15,18 @@ const NavBar = (props) => {
                 </div>
                 
                 <div>
-                    {/* { !props.user ?  */}
+                    { !props.user ? 
                         <React.Fragment>
-                            <Link to="/sign-up">Sign Up</Link>
-                            <Link to="/login">Login</Link>
+                            <NavLink to="/sign-up">Sign Up</NavLink>
+                            <LoginButton to="/login">Login</LoginButton>
                         </React.Fragment>
-                        {/* : */}
+                        : 
                         <React.Fragment>
-                            <Link to="/forecasts">Forecasts</Link>
-                            <Link to="/favorites">Favorites</Link>
-                            <Link to="/" onClick={ props.logout }>Logout</Link>
+                            <NavLink to="/forecasts">Forecasts</NavLink>
+                            <NavLink to="/favorites">Favorites</NavLink>
+                            <NavLink to="/" onClick={ props.logout }>Logout</NavLink>
                         </React.Fragment>
-                    {/* } */}
+                    }
                 </div>
             </Nav>    
         </header>

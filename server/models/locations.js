@@ -7,16 +7,49 @@ const locationSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    longitude: {
+    coordinates: {
+        type: Array,
+        required: true
+    },
+    country_group: {
         type: String,
         trim: true,
         required: true
     },
-    latitude: {
+    country: {
         type: String,
         trim: true,
         required: true
-    }   
+    },
+    state: {
+        type: String,
+        trim: true,
+    },
+    region: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    best_swell: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    best_wind: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    swell_rating: {
+        type: Object,
+        trim: true
+    },
+    wind_rating: {
+        type: Object,
+        trim: true
+    },
+    // users: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+
 }, {
     timestamps: true
 })

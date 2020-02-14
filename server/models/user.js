@@ -28,6 +28,18 @@ const userSchema = new mongoose.Schema({
         trim: true,
         minlength: 6
     },
+    favorites: [{
+        locationID: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        name: {
+            type: String,
+            required: true,
+            trim: true
+        }
+    }],
     tokens: [{
         token: {
             type: String,
@@ -37,6 +49,7 @@ const userSchema = new mongoose.Schema({
 }, {
     timestamps: true
 })
+
 
 // restrict the password and tokens from being sent back in the res
 userSchema.methods.toJSON = function() { 

@@ -21,7 +21,7 @@ const FormLogin = (props) => {
                 onChange={ e => setUserPassword(e.target.value)}
                 required />
             <button onClick={() => props.login(userEmail, userPassword)}>Login</button>
-            <p>{props.loginMessage}</p> 
+            <p style={{color: "red"}}>{props.loginMessage}</p> 
         </FormContainer>
     )
 }
