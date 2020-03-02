@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { FormContainer } from '../styles/FormsStyled';
+import { UserContext } from '../contexts/UserContext';
+import { Redirect } from "react-router-dom";
 
-
-const FormSignUp = (props) => {
+const FormSignUp = () => {
     
     const [userName, setUserName] = useState(""); // name
     const [userEmail, setUserEmail] = useState("");
     const [userPassword, setUserPassword] = useState("");
     const [confrimUserPassword, setUserConfirmPassword] = useState("");
+    const {handleSignUp, userInfo} = useContext(UserContext)
+
 
     return (
         <FormContainer> 
@@ -35,7 +38,10 @@ const FormSignUp = (props) => {
                 placeholder="Confirm Password"
                 onChange={ e => setUserConfirmPassword(e.target.value)}
                 required />
-            <button onClick={() => props.signUp( userName, userEmail, userPassword, )}>Sign Up</button> 
+            <button onClick={() => handleSignUp( userName, userEmail, userPassword, )}>Sign Up</button>
+            { userInfo ? 
+                <Redirect to={'/forecasts'}  /> : null
+            }
         </FormContainer>
     )
 }

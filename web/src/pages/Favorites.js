@@ -1,19 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react';
 import { Container } from '../styles/GlobalStyles';
 import { LocationLink} from '../styles/ForecastsPageStyled';
+import { UserContext } from '../contexts/UserContext';
 
-const Favorites = (props) => {
+const Favorites = () => {
+
+    const { userInfo } = useContext(UserContext)
 
     return (
         <Container margin col >
             <h1>Your Favorites</h1>
             { 
-                props.user.favorites ? 
-                props.user.favorites.map(location => <LocationLink to={`/location/${location.locationID}`} key={location._id}> {location.name} </LocationLink>) 
+                userInfo.favorites ? 
+                userInfo.favorites.map(location => <LocationLink to={`/location/${location.locationID}`} key={location._id}> {location.name} </LocationLink>) 
                 :
                 null
             }
-
         </Container>
     )
 }

@@ -4,7 +4,7 @@ import { Container } from '../styles/GlobalStyles';
 import appImage from '../assets/app-snap-shot.png'
 import appFav from '../assets/app-fav.png'
 
-const Home = (props) => {
+const Landing = (props) => {
     
     return (
         <React.Fragment>
@@ -46,6 +46,6 @@ const Home = (props) => {
     )
 }
 
-export default Home
+export default Landing
 
 

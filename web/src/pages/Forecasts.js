@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import ReactMapGl, {Marker, Popup, } from 'react-map-gl';
-import { Link, navigate } from "@reach/router";
 import Select from 'react-select'
 // styles
 import { Container, H2 } from '../styles/GlobalStyles';
 import { LocationLink, MapContainer, ListContainer, MapViewButton } from '../styles/ForecastsPageStyled';
-import '../styles/mapOverRide.css'
 // assets
 import marker from '../assets/location-marker.svg';
 
 
-const Forecasts = () => {
-    
+const Forecasts = (props) => {
     // map
     const [showMap, setShowMap] = useState(true) 
-    const [selectedLocation, setSelectedLoation] = useState(null) // location selected on map
-    const [ viewport, setViewport] = useState({ // set initial map values
+    const [selectedLocation, setSelectedLoation] = useState(null)
+    const [ viewport, setViewport] = useState({ 
         latitude: -21.814,
         longitude: 0.000,
         width: "100%",
@@ -25,7 +22,7 @@ const Forecasts = () => {
     })
 
     // location selections
-    const [locations, setLocations] = useState(null); // gets all locations from db
+    const [locations, setLocations] = useState(null);
     const [selectedCountryGroup, setSelectedCountryGroup] = useState("Select Location"); // gets all locations from db
     const [selectedOption, setSelectedOption] = useState("Search"); // selected location from dropdown
 
@@ -50,9 +47,9 @@ const Forecasts = () => {
             .catch(e => console.log(e))
     }
 
-    const handleSelectedOption = (selectedOption) => {
-        setSelectedOption(selectedOption.value)
-        navigate(`location/${selectedOption.id}`)
+    const handleSelectedOption = (value, id) => {
+        setSelectedOption(value)
+        props.history.push(`location/${id}`)
     }
 
     const handleShowMap = () => {
@@ -82,7 +79,7 @@ const Forecasts = () => {
                             <Select
                                 value={selectedOption} 
                                 placeholder={selectedOption}
-                                onChange={ (selectedOption) => handleSelectedOption(selectedOption)} 
+                                onChange={ (selectedOption) => handleSelectedOption(selectedOption.value, selectedOption.id)} 
                                 options={ 
                                     locations.map( location => {
                                         return { value: location.name, label: location.name, id: location._id }
@@ -122,7 +119,8 @@ const Forecasts = () => {
                                             offsetTop={-20}
                                         >
                                         <button style={{background: "none", border:"none", cursor:"pointer"}}
-                                                onClick={ () => navigate(`/location/${location._id}`)  }
+                                           
+                                                onClick={ () => handleSelectedOption(null, location._id)}
                                                 onMouseOver={ e => {
                                                     e.preventDefault();
                                                     setSelectedLoation(location)

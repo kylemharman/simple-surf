@@ -31,11 +31,6 @@ const ButtonAddToFavourites = (props) => {
 
             <ReactTooltip effect="solid"/>
         </React.Fragment>
-
-
-
-
-
     )
 }
 

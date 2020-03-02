@@ -1,106 +1,44 @@
-import React, { useState } from 'react';
-import { navigate } from "@reach/router";
-import axios from 'axios';
+import React, { useContext } from 'react';
+import { BrowserRouter as Router, Route } from "react-router-dom";
 // components
-import Routes from './Routes';
 import NavBar from '../components/NavBar';
 import { ToastContainer } from 'react-toastify';
 // styles
 import { ThemeProvider } from 'styled-components';
 import 'react-toastify/dist/ReactToastify.css';
 import { theme } from '../styles/theme';
+//routes
+import Landing from "../pages/Landing";
+import Forecasts from "../pages/Forecasts";
+import Favorites from "../pages/Favorites";
+import SignUp from "../pages/SignUp";
+import Login from "../pages/Login";
+import Location from "../pages/Location";
+// context
+import { UserProvider, UserContext } from '../contexts/UserContext';
+
 
 const App = () => {
-
-    const [userToken, setUserToken] = useState(false);
-	const [userInfo, setUserInfo] = useState(false);
-	const [loginMessage, setLoginMessage] = useState("");
-
-	const handleLogin = (userEmail, userPassword) => {
-		
-		axios.post('/login', { email: userEmail, password: userPassword })
-            .then( res => {
-                if(res.status === 200) {
-                    localStorage.setItem("userToken", JSON.stringify(res.data.token))
-                    setUserToken(res.data.token)
-                    setUserInfo(res.data.user)
-                    navigate('/forecasts')
-                }
-            })
-            .catch( e => {
-                setLoginMessage("Incorrect login details, please try again.")
-                console.log(e)
-            });
-	}
     
-    const handleLogout = () => {
-        
-        axios.post('/logout', null, { headers : { 'Authorization': `Bearer ${userToken}`} })
-        .then( res => { 
-                localStorage.removeItem('userToken');
-                // localStorage.removeItem('userInfo');
-                setUserToken(false)
-                setUserInfo(false)
-                navigate('/')
-            })
-            .catch( e => { console.log(e);});
-    }
-
-    const handleSignUp = (userName, userEmail, userPassword) => {
-        axios.post('/sign-up', { name: userName, email: userEmail, password: userPassword })
-            .then( res => {
-                if(res.status === 201) {
-                    localStorage.setItem("userToken", JSON.stringify(res.data.token))
-                    setUserToken(res.data.token)
-                    setUserInfo(res.data.user)
-                    navigate('/forecasts')
-                    console.log(res.data)
-                }
-            })
-            .catch( e => {
-                console.log(e)
-            });
-    }
-
-    const handleFavorites = (location) => {
-        
-        const userFavourite = userInfo.favorites.some(userFav => userFav.locationID === location._id)
-
-        if (userFavourite) {
-            axios.post(`/user/favorites/${location._id}`, null, { headers : { 'Authorization': `Bearer ${userToken}`} })
-                .then( res => {
-                    setUserInfo(res.data)
-                    console.log(`removed: ${res}`)
-                })
-                .catch( e => console.log(e))
-        } else if (!userFavourite) {
-            axios.post('/user/favorites', { locationID: location._id, name: location.name }, { headers : { 'Authorization': `Bearer ${userToken}`} })
-                .then( res => {
-                    
-                    setUserInfo(res.data)
-                    console.log(`added: ${res}`)
-                    
-                }) 
-                .catch( e => console.log(e) )
-        }
-
-        console.log(userInfo.favorites)
-    }
-
+    const userInfo = useContext(UserContext)
+    console.log(userInfo)
+    
     return (
-        <ThemeProvider theme={theme}>
-            <React.Fragment>
-                <NavBar user={userInfo} logout={() => handleLogout()} />
-                <Routes 
-                    user={userInfo} 
-                    login={ (userEmail, userPassword) => handleLogin(userEmail, userPassword)}
-                    signUp={ (userName ,userEmail, userPassword) => handleSignUp(userName, userEmail, userPassword)}
-                    addToFavorites={(location) => handleFavorites(location)}
-                    loginMessage={loginMessage}
-                />
-            <ToastContainer />
-            </React.Fragment>
-        </ThemeProvider>
+        <UserProvider>
+            <ThemeProvider theme={theme}>
+                <Router>
+                <NavBar />    
+                    <Route exact path="/" component={Landing} />
+                    <Route exact path="/forecasts" component={Forecasts} />
+                    <Route exact path="/favorites" component={Favorites} />
+                    <Route exact path="/location/:id" component={Location} />
+                    <Route exact path="/" component={Landing} />
+                    <Route exact path="/sign-up" component={SignUp} />
+                    <Route exact path="/login" component={Login} />
+                </Router>
+                <ToastContainer />
+            </ThemeProvider>
+        </UserProvider>
     )
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios';
 import ReactTooltip from 'react-tooltip'
 // components
@@ -14,6 +14,8 @@ import waveIcon from '../assets/wave-icon.svg';
 import windIcon from '../assets/wind-arrow.svg';
 import swellIcon from '../assets/swell-arrow.svg';
 import starIcon from '../assets/star.svg';
+// context
+import { UserContext } from '../contexts/UserContext';
 
 
 const Location = (props) => {
@@ -22,6 +24,7 @@ const Location = (props) => {
     const [dailyForcast, setDailyForcast] = useState(null) 
     const [location, setLocation] = useState({});
     const [selectedOption, setSelectedOption] = useState("Today")
+    const {handleFavorites, userInfo} = useContext(UserContext)
 
     const timeMap = {
         0: 0,
@@ -81,7 +84,7 @@ const Location = (props) => {
 
     const getLocation = async () => {
         try {
-            const res = await axios.get(`/locations/${props.id}`)
+            const res = await axios.get(`/locations/${props.match.params.id}`)
             setLocation(res.data)
             getForcast(res.data.coordinates[0],res.data.coordinates[1]);
         } catch (e) {
@@ -126,8 +129,8 @@ const Location = (props) => {
                 <Container center>
                 <h1 style={{marginRight: "30px"}}>{location.name}</h1> 
                     <ButtonAddToFavourites 
-                        favourite={ props.user.favorites.some(userFav => userFav.locationID === location._id) } 
-                        clicked={() => props.addToFavorites(location)} 
+                        favourite={ userInfo.favorites.some(userFav => userFav.locationID === location._id) } 
+                        clicked={() => handleFavorites(location)} 
                     />
                 </Container>
 

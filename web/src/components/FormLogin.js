@@ -1,28 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { FormContainer } from '../styles/FormsStyled';
+import { UserContext } from '../contexts/UserContext';
+import { Redirect } from "react-router-dom";
 
-const FormLogin = (props) => {
+const FormLogin = () => {
     
-    const [userEmail, setUserEmail] = useState("");
-    const [userPassword, setUserPassword] = useState("");
-
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const {handleLogin, userInfo} = useContext(UserContext)
+    
     return (
         <FormContainer> 
             <input 
                 type="email"
                 name="email"
                 placeholder="Email"
-                onChange={ e => setUserEmail(e.target.value)} 
+                onChange={ e => setEmail(e.target.value)} 
                 required />
             <input 
                 type="password"
                 name="password"
                 placeholder="Password"
-                onChange={ e => setUserPassword(e.target.value)}
+                onChange={ e => setPassword(e.target.value)}
                 required />
-            <button onClick={() => props.login(userEmail, userPassword)}>Login</button>
-            <p style={{color: "red"}}>{props.loginMessage}</p> 
+            <button onClick={() => handleLogin(email,password)}>Login</button>
+            { userInfo ? 
+                <Redirect to={'/forecasts'}  /> : null
+            }
         </FormContainer>
+
     )
 }
 
